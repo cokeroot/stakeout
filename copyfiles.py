@@ -1,3 +1,4 @@
+# As of right now, this file should be run instead of finduser.py this program imports finduser into itself.
 from finduser import *
 import shutil
 
