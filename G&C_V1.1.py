@@ -44,6 +44,8 @@ def get_filepaths(directory):
 # print all the files found from walking through different User's DDD directories
 # The user's who don't have the DDD files won't be outputted.
 
+################# PHASE 4 ################# Copying all files found in users desktop, downloads, and documents folder into one spot located where the file was executed first
+
 now = datetime.now()
 dt_string = now.strftime("%d-%m-%Y %H.%M")
 os.mkdir(str(dt_string))
