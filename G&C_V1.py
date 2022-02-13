@@ -41,15 +41,6 @@ def get_filepaths(directory):
 
     return file_paths
 
-def convert_size(size_bytes):
-    if size_bytes == 0:
-        return "0B"
-    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
-    i = int(math.floor(math.log(size_bytes, 1024)))
-    p = math.pow(1024,i)
-    s = round(size_bytes / p, 2)
-    return "%s %s" % (s, size_name[i])
-
 # print all the files found from walking through different User's DDD directories
 # The user's who don't have the DDD files won't be outputted.
 
@@ -61,11 +52,7 @@ for path in interesting_dirs:
     full_file_paths = get_filepaths(path) # path is the starting path that the function will walk through
     for filepath in full_file_paths:
         shutil.copy(filepath, dt_string)
-        currentSize = os.path.getsize(filepath)
-        totalSize = totalSize + int(currentSize)
-
 
 shutil.make_archive(("Z" + dt_string), 'zip', dt_string)
 shutil.rmtree(dt_string)
-print("Total size of original dump is: " + str(convert_size(totalSize)))
 print("Program finished.")
