@@ -54,7 +54,7 @@ for path in interesting_dirs:
     full_file_paths = get_filepaths(path) # path is the starting path that the function will walk through
     for filepath in full_file_paths:
         shutil.copy(filepath, dt_string)
-
+print("Zipping File.")
 shutil.make_archive(("Z" + dt_string), 'zip', dt_string)
 shutil.rmtree(dt_string)
 print("Program finished.")
