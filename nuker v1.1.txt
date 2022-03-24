@@ -1,0 +1,3 @@
+cd C:\Windows\System32\config
+for /f %%a in ('WEVTUTIL EL') do WEVTUTIL CL "%%a"
+timeout 30
